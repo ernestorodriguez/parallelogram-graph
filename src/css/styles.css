@@ -1,0 +1,16 @@
+html, body {
+    width:  100%;
+    height: 100%;
+    margin: 0;
+}
+
+canvas {
+    background: linear-gradient(45deg, #333652 0% -25%, #90ADC6);
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+  
+  .active {
+      cursor: pointer;
+  }
