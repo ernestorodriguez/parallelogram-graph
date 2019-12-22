@@ -71,7 +71,10 @@
         }
        
         TweenLite.to(circle, .5, {r:radius, onComplete:() =>{ 
-          areaCircle = circle;
+            areaCircle = circle;
+            ctx.font = '12px Monospace';
+            ctx.fillStyle = "#FAD02C";
+            ctx.fillText(`AREA: ${area}`, circle.x + radius + 10, circle.y);
         }, onUpdate:animate, ease: Back.easeOut.config(1.7)});
     }
 
@@ -85,10 +88,7 @@
         let animationFirstPoint;
         const animate = () => {
             update();
-            //animation
-            drawFilledCircle(pos,animation.r, 'rgba(255,255,255,.4)');
-            drawFilledCircle(pos, 3, '#659ed0');
-            
+           
             //animation
             if(previewsPoint) {
                 ctx.beginPath();
@@ -106,6 +106,11 @@
                 ctx.strokeStyle = "#659ed0";
                 ctx.stroke();
             }
+
+             //animation
+             drawFilledCircle(pos,animation.r, 'rgba(255, 0, 0, .5)');
+             drawFilledCircle(pos, 3, '#8e0f37');
+             
         }
 
         TweenLite.to(animation, .5, {r:11, onComplete:() =>{ 
@@ -127,20 +132,26 @@
     }
     function drawPoints() {
         points.forEach(point => {
-            drawFilledCircle(point, 11, 'rgba(255,255,255,.4)');
-            drawFilledCircle(point, 3, '#659ed0');
+            ctx.font = '9px Monospace';
+            ctx.fillStyle = "#333652";
+            ctx.fillText(`x: ${point.x} y: ${point.y}`, point.x + 15, point.y);
+            drawFilledCircle(point, 11, 'rgba(255,0,0, .5');
+            drawFilledCircle(point, 3, '#8e0f37');
         });
     }
 
     function update() {
         ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
-        drawPoints();
         drawLines();
+        drawPoints();
         if(areaCircle) {
             const area = polygonArea(points);
             const radius = Math.sqrt(area/Math.PI);
             const circle = getCenter(points, canvas.width, canvas.height);
             drawCircle(circle, radius);
+            ctx.font = '12px Monospace';
+            ctx.fillStyle = "#FAD02C";
+            ctx.fillText(`AREA: ${area}`, circle.x + radius + 10, circle.y);
         }
     }
 
