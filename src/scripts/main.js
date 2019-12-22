@@ -1,127 +1,191 @@
-const canvas = document.getElementById('graph');
-const ctx = canvas.getContext('2d');
-ctx.imageSmoothingQuality = 'hight';
-ctx.canvas.width  = window.innerWidth;
-ctx.canvas.height = window.innerHeight;
-var clicks = 0;
-var points = {
-    A: {},
-    B: {},
-    C: {}
-}
-function getMousePos(canvas, evt) {
-    const rect = canvas.getBoundingClientRect();
-    return {
-        x: evt.clientX - rect.left,
-        y: evt.clientY - rect.top
-    };
-}
-  
-function drawFilledCircle(position,radius, color) {
-    ctx.beginPath();
-    ctx.arc(position.x, position.y, radius, 0, 2 * Math.PI);
-    ctx.fillStyle = color;
-    ctx.fill();
-}
-
-function drawCircle(position,radius) {
-    ctx.beginPath();
-    ctx.arc(position.x, position.y, radius, 0, 2 * Math.PI);
-    ctx.strokeStyle = "#FAD02C";
-    ctx.stroke();
-}
-
-function drawLines(pos){
-    if(clicks === 0) {
-        points.A = pos;
-        clicks++
-    } else if (clicks == 1) {
-        points.B = pos;
-        ctx.beginPath();
-        ctx.moveTo(points.A.x, points.A.y);
-        ctx.strokeStyle = "#659ed0";
-        ctx.lineTo(pos.x, pos.y);
-        ctx.stroke();
-        clicks++
-    } else {
-        points.C = pos;
-        points.D = {x:points.C.x - (points.B.x - points.A.x), y:points.C.y + (points.A.y - points.B.y) };
-        ctx.beginPath();
-        ctx.moveTo(points.B.x, points.B.y);
-        ctx.lineTo(points.C.x, points.C.y);
-        ctx.lineTo(points.D.x, points.D.y);
-        ctx.lineTo(points.A.x, points.A.y);
-        ctx.closePath()
-        ctx.strokeStyle = "#659ed0";
-        ctx.stroke();
-        const area = polygonArea(points);
-        const radius = Math.sqrt(area/Math.PI);
-        var circlePost = getCenter(points, canvas)
-        drawCircle(circlePost, radius);
+(function(window) {
+    let ctx;
+    let canvas;
+    let areaCircle;
+    let points = [];
+    
+    /**
+     * initialize canvas, needs to be called
+     */
+    function initializeCanvas() {
+        ctx = canvas.getContext('2d');
+        ctx.imageSmoothingQuality = 'hight';
+        ctx.canvas.width  = window.innerWidth;
+        ctx.canvas.height = window.innerHeight;
     }
-}
 
-function draw(pos){
-    if(points.D) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.beginPath();
-        ctx.moveTo(points.A.x, points.A.y);
-        ctx.lineTo(points.B.x, points.B.y);
-        ctx.lineTo(points.C.x, points.C.y);
-        ctx.lineTo(points.D.x, points.D.y);
-        ctx.strokeStyle = "#659ed0";
-        ctx.closePath()
-        ctx.stroke();
-        const area = polygonArea(points);
-        const radius = Math.sqrt(area/Math.PI);
-        var circlePost = getCenter(points, canvas)
-        drawCircle(circlePost, radius);
-        Object.values(points).map((p) => {
-            drawFilledCircle(p, 11, 'rgba(255,255,255,.5)');
-            drawFilledCircle(p, 3, '#659ed0');
-        })
-    } else {
+    /**
+     * set listeners for user iteraction, needs to be called
+     */
+    function setListeners() {
+        window.addEventListener('resize', () => {
+            ctx.canvas.width  = window.innerWidth;
+            ctx.canvas.height = window.innerHeight;
+        });
         
-        drawLines(pos);
-        drawFilledCircle(pos, 11, 'rgba(255,255,255,.5)');
-        drawFilledCircle(pos, 3, '#659ed0');
-        if(points.D){
-            drawFilledCircle(points.D, 11, 'rgba(255,255,255,.5)');
-            drawFilledCircle(points.D, 3, '#659ed0');
-           
+        canvas.addEventListener('click', (event) => {
+            const mousePos = getMousePos(event);
+            if (points.length < 3) {
+                handleClick(mousePos);
+            }
+        });
+        canvas.addEventListener('mousedown', (event) => {
+            this.draging = true;
+            const mousePos = getMousePos(event);
+            ({ selectedPoint, opositePoint } = getSelectedPoint(points,mousePos));
+        });
+        canvas.addEventListener('mousemove', (event) => {
+            if(this.draging && selectedPoint) {
+                const mousePos = getMousePos(event);
+                updatePointsPosition(selectedPoint, opositePoint, mousePos);
+                update()
+            }
+        });
+        canvas.addEventListener('mouseup', () => {
+            this.draging = false;
+            this.selectedPoint = null
+        });
+    }
+    function handleClick(pos) {
+        animateNewPoint(pos);
+    }
+
+    function completeAnimation() {
+        if(points.length === 3) {
+            const finalPoint = getMissingPointParallelogram(points)
+            animateNewPoint(finalPoint);
+        } else if(points.length === 4) {
+            animateAreaCircle();
         }
     }
-   
-}
 
-
-function graph() {
-    var selectedPoint = null;
-    var opositePoint = null;
-    var draging = false;
-    canvas.addEventListener('click', (event) => {
-        var mousePos = getMousePos(canvas, event);
-        draw(mousePos);
-    });
-
-    canvas.addEventListener('mousedown', (event) => {
-        draging = true;
-        var mousePos = getMousePos(canvas, event);
-        ({ selectedPoint, opositePoint } = getSelectedPoint(points,mousePos));
-    })
-
-    canvas.addEventListener('mousemove', (event) => {
-        var mousePos = getMousePos(canvas, event);
-        if(draging && selectedPoint) {
-            updatePointsPosition(selectedPoint, opositePoint, mousePos);
-            draw()
+    function animateAreaCircle() {
+        const area = polygonArea(points);
+        const radius = Math.sqrt(area/Math.PI);
+        const circle = getCenter(points, canvas.width, canvas.height);
+        circle.r = 0;
+        
+        function animate (){
+            update();
+            drawCircle(circle, circle.r);
         }
-    });
+       
+        TweenLite.to(circle, .5, {r:radius, onComplete:() =>{ 
+          areaCircle = circle;
+        }, onUpdate:animate, ease: Back.easeOut.config(1.7)});
+    }
 
-    canvas.addEventListener('mouseup', (event) => {
-        draging = false;
-        selectedPoint = null
-    })
-}
+    function animateNewPoint(pos) {
+        const animation = {
+            r: 0,
+        }
+        let previewsPoint;
+        let animationPoint;
+        let firstPoint;
+        let animationFirstPoint;
+        const animate = () => {
+            update();
+            //animation
+            drawFilledCircle(pos,animation.r, 'rgba(255,255,255,.4)');
+            drawFilledCircle(pos, 3, '#659ed0');
+            
+            //animation
+            if(previewsPoint) {
+                ctx.beginPath();
+                ctx.moveTo(previewsPoint.x, previewsPoint.y);
+                ctx.lineTo(animationPoint.x, animationPoint.y);
+                ctx.strokeStyle = "#659ed0";
+                ctx.stroke();
+            }  
+            
+             //animation
+            if(animationFirstPoint) {
+                ctx.beginPath();
+                ctx.moveTo(firstPoint.x, firstPoint.y);
+                ctx.lineTo(animationFirstPoint.x, animationFirstPoint.y);
+                ctx.strokeStyle = "#659ed0";
+                ctx.stroke();
+            }
+        }
 
-graph();
+        TweenLite.to(animation, .5, {r:11, onComplete:() =>{ 
+            points.push(pos);
+            completeAnimation();
+        }, onUpdate:animate, ease: Back.easeOut.config(1.7)});
+
+        if(points.length > 0) {
+            previewsPoint = points[points.length - 1];
+            animationPoint = Object.assign({},previewsPoint);
+            TweenLite.to(animationPoint, .4, {x:pos.x, y:pos.y});
+        } 
+        
+        if(points.length === 3) {
+            firstPoint = points[0];
+            animationFirstPoint = Object.assign({}, firstPoint);
+            TweenLite.to(animationFirstPoint, .4, {x:pos.x, y:pos.y});
+        }       
+    }
+    function drawPoints() {
+        points.forEach(point => {
+            drawFilledCircle(point, 11, 'rgba(255,255,255,.4)');
+            drawFilledCircle(point, 3, '#659ed0');
+        });
+    }
+
+    function update() {
+        ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+        drawPoints();
+        drawLines();
+        if(areaCircle) {
+            const area = polygonArea(points);
+            const radius = Math.sqrt(area/Math.PI);
+            const circle = getCenter(points, canvas.width, canvas.height);
+            drawCircle(circle, radius);
+        }
+    }
+
+    function drawLines() {
+        if(points.length < 2) return;
+        points.forEach((point, index) => {
+            if(index === 0) {
+                ctx.moveTo(point.x, point.y);
+            } else {
+                ctx.lineTo(point.x, point.y);
+            }
+        });
+        ctx.strokeStyle = "#659ed0";
+        if(points.length === 4) {
+            ctx.closePath();
+        }
+        ctx.stroke();
+    }
+
+    function drawFilledCircle(position,radius, color) {
+        ctx.beginPath();
+        ctx.arc(position.x, position.y, radius, 0, 2 * Math.PI);
+        ctx.fillStyle = color;
+        ctx.fill();
+    }
+
+    function getMousePos(event) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x: event.clientX - rect.left,
+            y: event.clientY - rect.top
+        };
+    }
+    function drawCircle(position,radius) {
+        ctx.beginPath();
+        ctx.arc(position.x, position.y, radius, 0, 2 * Math.PI);
+        ctx.strokeStyle = "#FAD02C";
+        ctx.stroke();
+    }
+
+    window.DrawParallelogram = function(_canvas){
+        canvas = _canvas;
+        points = [];
+        clicks = 0;
+        initializeCanvas.call(this);
+        setListeners.call(this);
+    }
+}(window))

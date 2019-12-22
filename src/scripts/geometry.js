@@ -9,13 +9,10 @@
 /*
     mesure distance between points for each side A to B and B to C
     calculate area  AB x BC
-    
-
 */
 
-function getCenter(pointsData, canvas) {
-    const positions = Object.values(pointsData);
-    const limits = positions.reduce((acumulator, current) => {
+function getCenter(points, width, height) {
+    const limits = points.reduce((acumulator, current) => {
         if(current.x < acumulator.xL) {
             acumulator.xL = current.x
         }
@@ -30,7 +27,7 @@ function getCenter(pointsData, canvas) {
         }
 
         return acumulator;
-    }, {xL:canvas.width, xR: 0, yT:canvas.height, yB: 0});
+    }, {xL:width, xR: 0, yT:height, yB: 0});
     
     const centerX = (limits.xR - limits.xL) / 2 + limits.xL;
     const centerY = (limits.yB - limits.yT) / 2 + limits.yT;
@@ -68,7 +65,7 @@ function getSelectedPoint(points, mousePos) {
             opositePoint
         }
     }
-    
+
     return selection;
 }
 
@@ -79,9 +76,14 @@ function updatePointsPosition(selectedPoint, opositePoint, mousePos) {
     selectedPoint.y = mousePos.y;
 }
 
+function getMissingPointParallelogram(points) {
+    return {x:points[2].x - (points[1].x - points[0].x), y:points[2].y + (points[0].y - points[1].y) };
+}
+
 module.exports = {
     getCenter,
     polygonArea,
     getSelectedPoint,
-    updatePointsPosition
+    updatePointsPosition,
+    getMissingPointParallelogram,
 }
