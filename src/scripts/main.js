@@ -3,7 +3,7 @@
     let canvas;
     let areaCircle;
     let points = [];
-    
+
     /**
      * initialize canvas, needs to be called
      */
@@ -46,6 +46,7 @@
             this.selectedPoint = null
         });
     }
+
     function handleClick(pos) {
         animateNewPoint(pos);
     }
@@ -70,7 +71,7 @@
             drawCircle(circle, circle.r);
         }
        
-        TweenLite.to(circle, .5, {r:radius, onComplete:() =>{ 
+        TweenMax.to(circle, .5, {r:radius, onComplete:() =>{ 
             areaCircle = circle;
             ctx.font = '12px Monospace';
             ctx.fillStyle = "#FAD02C";
@@ -86,9 +87,9 @@
         let animationPoint;
         let firstPoint;
         let animationFirstPoint;
+
         const animate = () => {
             update();
-           
             //animation
             if(previewsPoint) {
                 ctx.beginPath();
@@ -113,7 +114,7 @@
              
         }
 
-        TweenLite.to(animation, .5, {r:11, onComplete:() =>{ 
+        TweenMax.to(animation, .5, {r:11, onComplete:() =>{ 
             points.push(pos);
             completeAnimation();
         }, onUpdate:animate, ease: Back.easeOut.config(1.7)});
@@ -121,15 +122,17 @@
         if(points.length > 0) {
             previewsPoint = points[points.length - 1];
             animationPoint = Object.assign({},previewsPoint);
-            TweenLite.to(animationPoint, .4, {x:pos.x, y:pos.y});
+            TweenMax.to(animationPoint, .4, {x:pos.x, y:pos.y});
         } 
         
-        if(points.length === 3) {
+        if(points.length === 4) {
             firstPoint = points[0];
             animationFirstPoint = Object.assign({}, firstPoint);
-            TweenLite.to(animationFirstPoint, .4, {x:pos.x, y:pos.y});
+            TweenMax.to(animationFirstPoint, .4, {x:pos.x, y:pos.y});
+            pointsComplete = true
         }       
     }
+
     function drawPoints() {
         points.forEach(point => {
             ctx.font = '9px Monospace';
@@ -185,6 +188,7 @@
             y: event.clientY - rect.top
         };
     }
+
     function drawCircle(position,radius) {
         ctx.beginPath();
         ctx.arc(position.x, position.y, radius, 0, 2 * Math.PI);
