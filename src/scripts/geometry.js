@@ -77,6 +77,5 @@ function updatePointsPosition(selectedPoint, opositePoint, mousePos) {
 }
 
 function getMissingPointParallelogram(points) {
-    console.log(points)
     return {x:points[2].x - (points[1].x - points[0].x), y:points[2].y + (points[0].y - points[1].y) };
 }
