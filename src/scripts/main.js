@@ -165,9 +165,10 @@
         }
     }
 
-    const elementsToRender = []
+    let elementsToRender = []
     let renderAnimations = [];
     let interacting = false
+
     function onUpdate() {
         if (interacting || renderAnimations.some((animate) => animate)) {
             interacting = false
@@ -242,7 +243,7 @@
      * Interactions
      */
 
-    const newPoints = []
+    let newPoints = []
     let storedLines;
 
     function addNewPoint(pos) {
@@ -293,8 +294,11 @@
         /**
          * clear canvas
          */
-        clear() {
-            // TODO
+        restart() {
+            elementsToRender = [];
+            interacting = true;
+            newPoints = []
+            storedLines = undefined;
         };
     }
 
