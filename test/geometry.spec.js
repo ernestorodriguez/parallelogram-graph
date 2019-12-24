@@ -1,10 +1,4 @@
-const { 
-    getCenter, 
-    polygonArea,
-    getSelectedPoint,
-    updatePointsPosition,
-    getMissingPointParallelogram } = require('../src/scripts/geometry');
-const { expect } = require('chai')
+
 describe('Geometry test', () => {
     it('getCenter() must return center of coordinates', () => {
         const points = [

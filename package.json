@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "nyc mocha 'test/**/*.spec.js' --watch"
+    "test": "nyc mocha 'test/**/*.spec.js' --watch",
+    "test:init": " mocha init './'"
   },
   "repository": {
     "type": "git",
