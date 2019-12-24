@@ -5,11 +5,11 @@ function mouseEvent(event, x,y, canvas) {
     var ev = document.createEvent("MouseEvent");
     ev.initMouseEvent(
         event,
-        true /* bubble */, true /* cancelable */,
+        true, true,
         window, null,
-        X, Y, X, Y, /* coordinates */
-        false, false, false, false, /* modifier keys */
-        0 /*left*/, null
+        X, Y, X, Y, 
+        false, false, false, false,
+        0, null
     );
     canvas.dispatchEvent(ev);
 }
@@ -32,33 +32,6 @@ describe('DrawParallelogram test', () => {
     });
 
     it('must draw points', () => {
-        const events = {};
-        /*const canvas = {
-            getBoundingClientRect() {
-                return {
-                    left: 0,
-                    top: 0,
-                }
-            },
-            getContext() {
-                return {
-                    canvas:this,
-                    clearRect: chai.spy(),
-                    beginPath: chai.spy(),
-                    beginArc: chai.spy(),
-                    arc: chai.spy(),
-                    fill: chai.spy(),
-                    fillText: chai.spy(),
-                    moveTo: chai.spy(),
-                    lineTo: chai.spy(),
-                    stroke: chai.spy(),
-                    closePath: chai.spy(),
-                }
-            },
-            addEventListener: chai.spy((event, callback) => {
-                events[event] = callback;
-            }),
-        }*/
         const canvas = document.getElementById('graph');
         const ctx = canvas.getContext('2d');
         chai.spy.on(ctx,)

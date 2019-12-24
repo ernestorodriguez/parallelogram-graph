@@ -7,8 +7,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="./src/css/normalize.css">
         <link rel="stylesheet"  type="text/css" href="./src/css/styles.css">
-
-  <meta name="theme-color" content="#fafafa">
     </head>
     <body>
         <main>
@@ -23,25 +21,33 @@
         <aside class="aside" data-js="aside">
             <button class="button-close" data-js="close-aside">+</button>
             <section class="about-container">
-                <div class="info-contaier">
+                <article class="info-contaier">
                     <h1 class="title">Draw Parallelogram</h1>
                     <p>This's a simple App to draw a parallelogram and show you the area for the shape you drew.</p>
-                    <P>To start, click on the screen, by repeating it this, you can select three points for the parallelogram.  Pressing the mouse button over a point and holding it, you can move the point around,  this will modify the current shape, and show you the new calculated area.</P>
+                    <P>To start, click on the screen.</p>
+                    <p>By repeating it, you can select three points for the parallelogram.</p>
+                    <p>Pressing the mouse button over a point and holding it, you can move the point around, this will modify the current shape, and show you the new calculated area.</P>
                     <p>You can start all over, making click on the "restart" button.</p>
                     <br>    
                     <p><b>About me:</b></p>
-                    <p>I'm a Frontend developer, passioned for code, with a solid background in design. I my career, I've been involved in simple web apps, advert games for mobile and high-performance web applications with thousands of requests by second. I had the opportunity not only to develop tested, maintainable, and reusable code but also to improve the user experience through my designer background.</p>
+                    <p>I'm a Frontend developer, passioned for code, with a solid background in design. </p>
+                    <p>I my career, I've been involved in simple web apps, advert games for mobile and high-performance web applications with thousands of requests by second.</p>
+                    <p>I had the opportunity not only to develop tested, maintainable, and reusable code but also to improve the user experience through my designer background.</p>
                     <p>Also, I like the space, physics, and aero engineering, if you want to start a chat about quantum entanglement applications on communications I'm the right guy!</p>
                     <p><b>Ernesto.</b></p>
-                </div>
+                </article>
             </section>
         </aside>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/easing/EasePack.min.js"></script>
+        <script src="src/scripts/entities/Point.js" ></script>
+        <script src="src/scripts/entities/Parallelogram.js" ></script>
+        <script src="src/scripts/entities/AreaCircle.js" ></script>
         <script src="src/scripts/main.js" ></script>
         <script src="src/scripts/geometry.js" ></script>
         <script>
             document.addEventListener("DOMContentLoaded", function(event) { 
+                
                 const canvas = document.querySelector('[data-js="graph-canvas"]');
                 const restartButton = document.querySelector('[data-js="restart-button"]');
                 const aboutButton = document.querySelector('[data-js="about-button"]');
