@@ -1,16 +1,9 @@
-// user can select 3 points (mark with a circle 11px wide), and has te posibility to moved
-
-// draw a parallegram blue line with the 3 points selected by the user
-// draw a circle yellow line with same Area, And center of mass as parallegram
-// draw coordinates for the selected poits and area for the shapes
-
-
-
-/*
-    mesure distance between points for each side A to B and B to C
-    calculate area  AB x BC
-*/
-
+/**
+ * calculate center of poligon
+ * @param {Array} points list of points x, y
+ * @param {number} width of container
+ * @param {number} height of container
+ */
 function getCenter(points, width, height) {
     const limits = points.reduce((acumulator, current) => {
         if(current.x < acumulator.xL) {
@@ -34,8 +27,11 @@ function getCenter(points, width, height) {
     return { x: centerX, y: centerY };
 }
 
-function polygonArea(pointsData){ 
-    const points =  Object.values(pointsData);
+/**
+ * calculate area of poligon
+ * @param {array} points list of Points
+ */
+function polygonArea(points){ 
     let previus = points[points.length - 1];
     const area = points.reduce((a, c) => {
         const current = a + (previus.x+c.x) * (previus.y-c.y)
@@ -46,10 +42,9 @@ function polygonArea(pointsData){
 }
 
 function getSelectedPoint(points, mousePos) {
-    let selection = {}
-    const positions = Object.values(points);
     let opositeIndex = 0;
-    const selectedPoint = positions.find((a, index) => {
+    let selection = {};
+    const selectedPoint = points.find((a, index) => {
         opositeIndex = Math.abs(index - 2);
         if (opositeIndex === index) {
             opositeIndex = 3;
@@ -57,7 +52,7 @@ function getSelectedPoint(points, mousePos) {
         return Math.abs(mousePos.x - a.x) < 6 && Math.abs(mousePos.y - a.y) < 6;
     });
 
-    opositePoint = positions[opositeIndex];
+    opositePoint = points[opositeIndex];
 
     if(selectedPoint) {
         selection = {

@@ -82,14 +82,12 @@
      * Interactions
      */
 
-
     function addNewPoint(pos) {
         if (!storedLines) {
             storedLines = new Parallelogram(config);
             elementsToRender.push(storedLines);
         }
         if (newPoints.length >= 3) return;
-        console.log(newPoints.length)
         const newPoint = new Point(pos, config).animate();
         newPoints.push(newPoint)
         storedLines.addPoint(newPoint)
