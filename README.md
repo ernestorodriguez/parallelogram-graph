@@ -1,4 +1,5 @@
 # Draw Parallelogram
+
 This's a simple App to draw a parallelogram and show you the area for the shape you drew. Use HTML Canvas and Greensock TweenMax.
 
 ## Run Demo
@@ -14,7 +15,7 @@ Open index.html on your browser.
 
 ## Install
 
-run 
+run
 
 ```bash
 npm i
