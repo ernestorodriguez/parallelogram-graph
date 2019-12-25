@@ -6,14 +6,13 @@
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "watch": "webpack --config webpack.config.js --watch",
-    "test": "nyc --reporter=html --reporter=text mocha 'test/**/*.spec.js'",
-    "test:unit": "nyc mocha 'test/**/*.spec.js'"
+    "test": "nyc --reporter=html --reporter=text mocha 'test/**/*.spec.js'"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ernestorodriguez/parallelogram-graph.git"
   },
-  "author": "",
+  "author": "Ernesto R",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/ernestorodriguez/parallelogram-graph/issues"
