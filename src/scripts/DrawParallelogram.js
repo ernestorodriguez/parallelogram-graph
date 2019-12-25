@@ -1,6 +1,6 @@
 const Parallelogram = require('./entities/Parallelogram');
 const Point = require('./entities/Point');
-const { getSelectedPoint, updatePointsPosition } = require('./geometry')
+const { getSelectedPoint, updatePointsPosition } = require('./geometry');
 
 class DrawParallelogram {
     /**
