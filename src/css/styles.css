@@ -8,6 +8,7 @@ html, body {
     overflow: hidden;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 400;
+    background: linear-gradient(45deg, #333652 0% -25%, #90ADC6);
 }
 * {
     box-sizing: border-box;
@@ -18,7 +19,6 @@ html, body {
 */
 
 .graph-canvas {
-    background: linear-gradient(45deg, #333652 0% -25%, #90ADC6);
     margin: 0;
     padding: 0;
     border: none;
@@ -45,7 +45,9 @@ html, body {
     border-radius: 3px;
     opacity: .7;
     cursor: pointer;
+    border-style: solid;
 }
+
 .button:hover {
     opacity: 1;
 }
@@ -118,6 +120,10 @@ html, body {
     padding: 45% 30px 70px;
     height: 100%;
     overflow: auto;
+}
+
+.info-contaier {
+    padding-bottom: 60px;
 }
 
 .aside.active {
