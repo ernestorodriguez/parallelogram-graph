@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "nyc mocha 'test/**/*.spec.js' --watch",
-    "test:init": " mocha init './'"
+    "test": "nyc --reporter=html --reporter=text mocha 'test/**/*.spec.js'",
+    "test:unit": "nyc mocha 'test/**/*.spec.js'"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/ernestorodriguez/parallelogram-graph#readme",
   "dependencies": {
     "chai": "^4.2.0",
+    "chai-spies": "^1.0.0",
     "mocha": "^6.2.2"
   },
   "devDependencies": {

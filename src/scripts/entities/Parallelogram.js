@@ -1,3 +1,6 @@
+const AreaCircle = require('./AreaCircle');
+const Point = require('./Point');
+const { getMissingPointParallelogram } = require('../geometry');
 /**
  * Entity representing the Parallelogram draw by the user
  */
@@ -10,7 +13,7 @@ class Parallelogram {
         this.animator = animator;
         this.easing = easing;
         this.newPoints = newPoints;
-        this.storedLines = storedLines;
+        this.storedLines = storedLines; // TODO REVIEW THIS AND REMOVE
         this.elementsToRender = elementsToRender;
         this.points = [];
         this.animatedPoints = []
@@ -49,13 +52,14 @@ class Parallelogram {
             this.elementsToRender.push(new AreaCircle(this, this.config).animate())
         }
     }
+
     /**
      * function called for the render system on interaction or animation
      * @returns {boolean}
      */
-    render = function () {
-        const lines = new Path2D();
+    render() {
         if (this.points.length < 2) return;
+        const lines = new Path2D();
         const points = this.isAnimating ? this.animatedPoints : this.points;
         points.forEach((point, i) => {
             if (i === 0) {
@@ -65,7 +69,7 @@ class Parallelogram {
             lines.lineTo(point.x, point.y);
         });
 
-        lines.strokeStyle = this.lineColor;
+        lines.strokeStyle = this.lineColor; //review this
         this.ctx.strokeStyle = this.lineColor;
         this.ctx.stroke(lines);
         return this.isAnimating;
@@ -86,3 +90,5 @@ class Parallelogram {
         });
     }
 }
+
+module.exports = Parallelogram;

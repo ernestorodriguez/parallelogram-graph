@@ -1,3 +1,4 @@
+const { polygonArea, getCenter } = require('../geometry')
 /**
  * Entity representing the calculate area circle of Parallelogram
  * @class
@@ -92,3 +93,6 @@ class AreaCircle {
         return this;
     }
 }
+
+
+module.exports = AreaCircle;

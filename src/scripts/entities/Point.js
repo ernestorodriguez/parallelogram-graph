@@ -76,3 +76,5 @@ class Point {
         this.ctx.fill(circle);
     }
 }
+
+module.exports = Point;
