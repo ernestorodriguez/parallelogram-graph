@@ -1,110 +1,83 @@
-(function (window) {
-    let ctx;
-    let canvas;
-    let newPoints = []
-    let storedLines;
-    let config;
-    let elementsToRender = []
-    let renderAnimations = [];
-    let interacting = false
 
-    function onUpdate() {
-        if (interacting || renderAnimations.some((animate) => animate)) {
-            interacting = false
-            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-            renderAnimations = elementsToRender.map(element => element.render());
-        }
-
-        requestAnimationFrame(onUpdate.bind(this));
-    }
-
-
+class DrawParallelogram {
     /**
-     * initialize canvas, needs to be called
-     */
-    function initializeCanvas() {
-        ctx = canvas.getContext('2d');
-        ctx.imageSmoothingQuality = 'high';
-        ctx.canvas.width = window.innerWidth;
-        ctx.canvas.height = window.innerHeight;
-    }
-
-    /**
-    * set listeners for user iteraction, needs to be called
+     * initialize interactive graph 
+     * @param {Element} canvas html canvas element
+     * @constructor
     */
-    function setListeners() {
-        window.addEventListener('resize', resizeHandler);
-        canvas.addEventListener('click', clickHandler);
-        canvas.addEventListener('mousedown', mouseDownHandler);
-        canvas.addEventListener('mousemove', mouseMoveHanlder);
-        canvas.addEventListener('mouseup', mouseUpHandler);
+    constructor(canvas) {
+        this.ctx;
+        this.canvas = canvas;
+        this.elementsToRender = []
+        this.renderAnimations = [];
+        this.newPoints = []
+        this.parallelogram;
+        this.interacting = false
+        this.selectedPoint;
+        this.opositePoint
+        this.animator = TweenMax,
+            this.easing = {
+                easeOut: Back.easeOut.config(1.7),
+            };
+        this.initializeCanvas.call(this);
+        this.setListeners.call(this);
+        requestAnimationFrame(this.onUpdate.bind(this));
     }
 
     /**
-     * Event Handlers
+     * clear canvas
      */
-
-    function resizeHandler() {
-        interacting = true;
-        ctx.canvas.width = window.innerWidth;
-        ctx.canvas.height = window.innerHeight;
-    };
-
-    function clickHandler(event) {
-        interacting = true;
-        const mousePos = getMousePos(event);
-        addNewPoint(mousePos);
-
-    }
-
-    function mouseDownHandler(event) {
-        interacting = true;
-        this.draging = true;
-        const mousePos = getMousePos(event);
-        ({ selectedPoint, opositePoint } = getSelectedPoint(newPoints, mousePos));
-    }
-
-    function mouseMoveHanlder(event) {
-        if (this.draging && selectedPoint) {
-            interacting = true;
-            const mousePos = getMousePos(event);
-            updatePointsPosition(selectedPoint, opositePoint, mousePos);
-        }
-    }
-
-    function mouseUpHandler() {
-        interacting = true;
-        this.draging = false;
+    restart() {
+        this.elementsToRender = []
+        this.renderAnimations = [];
+        this.newPoints = [];
+        this.parallelogram = null;
+        this.interacting = true;
         this.selectedPoint = null;
+        this.opositePoint = null;
     }
 
     /**
-     * Interactions
+     * initialize canvas
      */
+    initializeCanvas() {
+        this.ctx = this.canvas.getContext('2d');
+        this.ctx.imageSmoothingQuality = 'high';
+        this.ctx.canvas.width = window.innerWidth;
+        this.ctx.canvas.height = window.innerHeight;
+    }
 
-    function addNewPoint(pos) {
-        if (!storedLines) {
-            storedLines = new Parallelogram(config);
-            elementsToRender.push(storedLines);
+    /**
+    * set listeners for user iteraction
+    */
+    setListeners() {
+        window.addEventListener('resize', this.resizeHandler.bind(this));
+        this.canvas.addEventListener('click', this.clickHandler.bind(this));
+        this.canvas.addEventListener('mousedown', this.mouseDownHandler.bind(this));
+        this.canvas.addEventListener('mousemove', this.mouseMoveHanlder.bind(this));
+        this.canvas.addEventListener('mouseup', this.mouseUpHandler.bind(this));
+    }
+
+    /**
+     * render elements on interaction or animation
+     */
+    onUpdate() {
+        if (this.interacting || this.renderAnimations.some((animate) => animate)) {
+            this.interacting = false
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.renderAnimations = this.elementsToRender.map(element => element.render());
         }
-        if (newPoints.length >= 3) return;
-        const newPoint = new Point(pos, config).animate();
-        newPoints.push(newPoint)
-        storedLines.addPoint(newPoint)
-        elementsToRender.push(newPoint);
-        storedLines.animate();
+
+        requestAnimationFrame(this.onUpdate.bind(this));
     }
-    /**
-     * utils
-     */
 
     /**
      * calculate pointer position on event.
      * @param {Event} event 
      * @returns {Object} point with position
      */
-    function getMousePos(event) {
-        const rect = canvas.getBoundingClientRect();
+    getMousePos(event) {
+        const rect = this.canvas.getBoundingClientRect();
         return {
             x: event.clientX - rect.left,
             y: event.clientY - rect.top
@@ -112,48 +85,68 @@
     }
 
     /**
-     * initialize interactive graph 
-     * @param {Element} _canvas html canvas element
-     * @constructor
-     */
-    class DrawParallelogram {
-        constructor(_canvas) {
-            
-            canvas = _canvas;
-            
-            initializeCanvas.call(this);
-            setListeners.call(this);
-            config = {
-                ctx, 
-                canvas, 
-                animator: TweenMax,
-                easing: {
-                    easeOut: Back.easeOut.config(1.7),
-                },
-                // change this
-                newPoints,
-                storedLines,
-                elementsToRender,
-            }
-            requestAnimationFrame(onUpdate.bind(this));
-            // remove this
-            window.drawign = this;
-            // add singleton
-        }
-        /**
-         * clear canvas
-         */
-        restart() {
-            elementsToRender = [];
-            interacting = true;
-            newPoints = []
-            storedLines = undefined;
-        };
+    * resize Event Handler
+    */
+    resizeHandler() {
+        this.interacting = true;
+        ctx.canvas.width = window.innerWidth;
+        ctx.canvas.height = window.innerHeight;
+    };
+
+    /**
+    * click Event Handler
+    */
+    clickHandler(event) {
+        this.interacting = true;
+        const mousePos = this.getMousePos(event);
+        this.addNewPoint(mousePos);
     }
 
     /**
-     * make api avaible
-     */
-    window.DrawParallelogram = DrawParallelogram;
+    * mouse down Event Handler
+    */
+    mouseDownHandler(event) {
+        this.interacting = true;
+        this.draging = true;
+        const mousePos = this.getMousePos(event);
+        const { selectedPoint, opositePoint } = getSelectedPoint(this.newPoints, mousePos);
+        this.selectedPoint = selectedPoint;
+        this.opositePoint = opositePoint;
+    }
+    /**
+    * mouse move Event Handler
+    */
+    mouseMoveHanlder(event) {
+        if (this.draging && this.selectedPoint) {
+            this.interacting = true;
+            const mousePos = this.getMousePos(event);
+            updatePointsPosition(this.selectedPoint, this.opositePoint, mousePos);
+        }
+    }
 
-}(window))
+    /**
+    * mouse up Event Handler
+    */
+    mouseUpHandler() {
+        this.interacting = true;
+        this.draging = false;
+        this.selectedPoint = null;
+    }
+
+    /**
+     * add new point to Parallelogram, it will create one if is not defined
+     * @param {object} pos 
+     */
+    addNewPoint(pos) {
+        if (!this.parallelogram) {
+            this.parallelogram = new Parallelogram(this);
+            this.elementsToRender.push(this.parallelogram);
+        }
+        if (this.newPoints.length >= 3) return;
+        const newPoint = new Point(pos, this).animate();
+        this.newPoints.push(newPoint)
+        this.parallelogram.addPoint(newPoint)
+        this.elementsToRender.push(newPoint);
+        this.parallelogram.animate();
+    }
+}

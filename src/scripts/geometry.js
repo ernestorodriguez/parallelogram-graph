@@ -41,6 +41,12 @@ function polygonArea(points){
     return Math.abs(area/2);
 }
 
+/**
+ * match mouse position with a point in the array and return it and the oposite point
+ * @param {array} points 
+ * @param {object} mousePos 
+ * @returns {object} {selectedPoint, opositePoint}
+ */
 function getSelectedPoint(points, mousePos) {
     let opositeIndex = 0;
     let selection = {};
@@ -64,6 +70,12 @@ function getSelectedPoint(points, mousePos) {
     return selection;
 }
 
+/**
+ * update oposite point and current point with new position from mouse
+ * @param {object} selectedPoint 
+ * @param {object} opositePoint 
+ * @param {object} mousePos 
+ */
 function updatePointsPosition(selectedPoint, opositePoint, mousePos) {
     opositePoint.x = opositePoint.x + selectedPoint.x - mousePos.x;
     opositePoint.y = opositePoint.y + selectedPoint.y - mousePos.y;
@@ -71,6 +83,11 @@ function updatePointsPosition(selectedPoint, opositePoint, mousePos) {
     selectedPoint.y = mousePos.y;
 }
 
+/**
+ * calculate missing point of parallelogram
+ * @param {array} points 
+ * @returns {object} object position
+ */
 function getMissingPointParallelogram(points) {
     return {x:points[2].x - (points[1].x - points[0].x), y:points[2].y + (points[0].y - points[1].y) };
 }
