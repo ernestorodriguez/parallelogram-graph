@@ -1,15 +1,15 @@
-const { polygonArea, getCenter } = require('../geometry')
+const { polygonArea, getCenter } = require('../geometry');
 /**
  * Entity representing the calculate area circle of Parallelogram
  * @class
  */
 class AreaCircle {
     /**
-     * @param {Parallelogram} parallelogram instance of paralelogram;  
-     * @param {Object} Config context for rendering and interaction 
-     * @param {Element} Config.canvas canvas
-     * @param {Object} Config.animator tweener for animation
-     * @param {Object} Config.easing ease for animation
+     * @param {Parallelogram} parallelogram instance of parallelogram;
+     * @param {object} Config context for rendering and interaction
+     * @param {element} Config.canvas canvas
+     * @param {object} Config.animator tweener for animation
+     * @param {object} Config.easing ease for animation
      * @constructor
      */
     constructor(parallelogram, config) {
@@ -81,7 +81,7 @@ class AreaCircle {
 
     /**
      * start animation
-     * @returns {Point} current instance
+     * @returns {AreaCircle} current instance
      */
     animate() {
         this.isAnimating = true;

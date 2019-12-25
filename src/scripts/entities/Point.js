@@ -63,7 +63,7 @@ class Point {
     /**
      * use path to draw a circle in the context
      * @param {object} position 
-     * @param {string} radius 
+     * @param {number} radius
      * @param {string} color 
      * @param {path2D} path2D 
      */

@@ -44,7 +44,7 @@ describe('Geometry test', () => {
                 {x:0,y:100},
             ];
             expect(getSelectedPoint(points, {x: 5, y:5})).to.eqls({
-                opositePoint: points[2],
+                oppositePoint: points[2],
                 selectedPoint: points[0],
             });
         });

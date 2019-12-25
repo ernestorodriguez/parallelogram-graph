@@ -22,7 +22,7 @@ npm i
 
 ```
 
-This will install al depencencies for test and compile
+This will install al dependencies for test and compile
 
 ## Run test
 

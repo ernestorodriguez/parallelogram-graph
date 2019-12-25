@@ -15,7 +15,7 @@ class Parallelogram {
         this.animator = animator;
         this.easing = easing;
         this.points = [];
-        this.animatedPoints = []
+        this.animatedPoints = [];
         this.lineColor = '#659ed0';
     }
 
@@ -26,13 +26,13 @@ class Parallelogram {
      */
     addPoint(point) {
         if (this.points.length >= 3) return;
-        this.reguisterPoint(point)
+        this.reguisterPoint(point);
         this.config.addElementToRender(point);
         this.animate();
     }
 
     reguisterPoint(point) {
-        this.animatedPoints.push({ x: point.x, y: point.y })
+        this.animatedPoints.push({ x: point.x, y: point.y });
         this.points.push(point);
         return this;
     }

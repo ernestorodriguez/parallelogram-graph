@@ -17,7 +17,7 @@ class DrawParallelogram {
         this.parallelogram;
         this.interacting = false
         this.selectedPoint = null;
-        this.opositePoint = null;
+        this.oppositePoint = null;
         this.animator = greenSockTweener;
         this.easing = {
             easeOut: greenSockEase.easeOut.config(1.7),
@@ -37,7 +37,7 @@ class DrawParallelogram {
         this.renderAnimations = [];
         this.interacting = true;
         this.selectedPoint = null;
-        this.opositePoint = null;
+        this.oppositePoint = null;
         this.setupParallelogram();
     }
 
@@ -108,10 +108,10 @@ class DrawParallelogram {
 
     /**
      * add element to render 
-     * @param {Path2D} shape 
+     * @param {object} entity
      */
-    addElementToRender(shape) {
-        this.elementsToRender.push(shape);
+    addElementToRender(entity) {
+        this.elementsToRender.push(entity);
     }
 
     /**
@@ -165,9 +165,9 @@ class DrawParallelogram {
         this.draging = true;
         const mousePos = this.getMousePos(event);
         if(this.parallelogram) {
-            const { selectedPoint, opositePoint } = this.parallelogram.selectPointAndOposite(mousePos);
+            const { selectedPoint, oppositePoint } = this.parallelogram.selectPointAndOposite(mousePos);
             this.selectedPoint = selectedPoint;
-            this.opositePoint = opositePoint;
+            this.oppositePoint = oppositePoint;
         }
     }
     /**
@@ -177,7 +177,7 @@ class DrawParallelogram {
         if (this.draging && this.selectedPoint) {
             this.interacting = true;
             const mousePos = this.getMousePos(event);
-            updatePointsPosition(this.selectedPoint, this.opositePoint, mousePos);
+            updatePointsPosition(this.selectedPoint, this.oppositePoint, mousePos);
         }
     }
 
