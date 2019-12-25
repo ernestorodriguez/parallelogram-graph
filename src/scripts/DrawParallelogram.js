@@ -9,7 +9,7 @@ class DrawParallelogram {
      * @constructor
     */
     constructor(canvas, greenSockTweener, greenSockEase) {
-        
+
         this.ctx;
         this.canvas = canvas;
         this.elementsToRender = []
@@ -58,8 +58,11 @@ class DrawParallelogram {
         window.addEventListener('resize', this.resizeHandler.bind(this));
         this.canvas.addEventListener('click', this.clickHandler.bind(this));
         this.canvas.addEventListener('mousedown', this.mouseDownHandler.bind(this));
+        this.canvas.addEventListener('touchstart', this.mouseDownHandler.bind(this),{passive:true});
         this.canvas.addEventListener('mousemove', this.mouseMoveHanlder.bind(this));
+        this.canvas.addEventListener('touchmove', this.mouseMoveHanlder.bind(this),{passive:true});
         this.canvas.addEventListener('mouseup', this.mouseUpHandler.bind(this));
+        this.canvas.addEventListener('touchsend', this.mouseUpHandler.bind(this),{passive:true});
     }
 
     /**
@@ -112,15 +115,27 @@ class DrawParallelogram {
     }
 
     /**
-     * calculate pointer position on event.
+     * calculate pointer position on mouse or touch event.
      * @param {Event} event 
      * @returns {Object} point with position
      */
     getMousePos(event) {
+
+        let client = {
+            x: event.clientX,
+            y: event.clientY 
+        }
+
+        if( event.touches ) {
+            client = {
+                x: event.touches[0].clientX,
+                y: event.touches[0].clientY,
+            }
+        } 
         const rect = this.canvas.getBoundingClientRect();
         return {
-            x: event.clientX - rect.left,
-            y: event.clientY - rect.top
+            x: client.x - rect.left,
+            y: client.y - rect.top
         };
     }
 

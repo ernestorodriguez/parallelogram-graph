@@ -124,12 +124,12 @@ describe('DrawParallelogram test', () => {
         const point2 = {x:200, y:200};
         const calculatePoint = {x:200, y:100};
         const expectePosition = {x:50, y:150};
-        actions.click({clientX:point0.x, clientY:point0.y});
-        actions.click({clientX:point1.x, clientY:point1.y});
-        actions.click({clientX:point2.x, clientY:point2.y});
-        actions.mousedown({clientX:calculatePoint.x + 6, clientY:calculatePoint.y + 6});
-        actions.mousemove({clientX:expectePosition.x, clientY:expectePosition.y});
-        actions.mouseup({clientX:expectePosition.x, clientY:expectePosition.y});
+        actions.click({touches: [{clientX:point0.x, clientY:point0.y}]});
+        actions.click({touches: [{clientX:point1.x, clientY:point1.y}]});
+        actions.click({touches: [{clientX:point2.x, clientY:point2.y}]});
+        actions.mousedown({touches: [{clientX:calculatePoint.x + 6, clientY:calculatePoint.y + 6}]});
+        actions.mousemove({touches: [{clientX:expectePosition.x, clientY:expectePosition.y}]});
+        actions.mouseup({touches: [{clientX:expectePosition.x, clientY:expectePosition.y}]});
 
         const expectedPoints = [
             new Point(point0, dp),
