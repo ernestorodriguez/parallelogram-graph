@@ -7,20 +7,21 @@ class AreaCircle {
     /**
      * @param {Parallelogram} parallelogram instance of paralelogram;  
      * @param {Object} Config context for rendering and interaction 
-     * @param {Object} Config.ctx canvas context
      * @param {Element} Config.canvas canvas
      * @param {Object} Config.animator tweener for animation
      * @param {Object} Config.easing ease for animation
      * @constructor
      */
-    constructor(parallelogram, {ctx, canvas, animator, easing }) {
-        this.ctx = ctx;
+    constructor(parallelogram, config) {
+        const { canvas, animator, easing } = config;
+        this.config = config;
         this.canvas = canvas;
         this.animator = animator;
         this.easing = easing;
         this.parallelogram = parallelogram;
         this.updateProperties();
         this.circleColor = '#FAD02C';
+        this.font = '12px Helvetica';
     }
 
     /**
@@ -61,14 +62,13 @@ class AreaCircle {
         if (!this.isAnimating) {
             this.updateProperties();
         }
-        this.ctx.font = '12px Helvetica';
-        this.ctx.fillStyle = this.circleColor;
-        this.ctx.fillText(`AREA: ${this.area}`, this.x + this.r + 10, this.y);
+        const text = `AREA: ${this.area}`;
+        const position = {x: this.x + this.r + 10, y: this.y };
+        this.config.reguisterText(text, position, this.circleColor, this.font);
 
         const circlePath = new Path2D();
         circlePath.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
-        this.ctx.strokeStyle = this.circleColor;
-        this.ctx.stroke(circlePath);
+        this.config.reguisterLine(circlePath, this.circleColor);
         return this.isAnimating;
     }
 

@@ -1,20 +1,19 @@
 const AreaCircle = require('./AreaCircle');
 const Point = require('./Point');
-const { getMissingPointParallelogram } = require('../geometry');
+const { getMissingPointParallelogram, getSelectedPoint } = require('../geometry');
 /**
  * Entity representing the Parallelogram draw by the user
  */
 class Parallelogram {
+    /**
+     * 
+     * @param {DrawParallelogram} config 
+     */
     constructor(config) {
-        const {ctx, canvas, animator, easing,  newPoints, storedLines, elementsToRender } = config;
+        const { animator, easing } = config;
         this.config = config;
-        this.ctx = ctx;
-        this.canvas = canvas;
         this.animator = animator;
         this.easing = easing;
-        this.newPoints = newPoints;
-        this.storedLines = storedLines; // TODO REVIEW THIS AND REMOVE
-        this.elementsToRender = elementsToRender;
         this.points = [];
         this.animatedPoints = []
         this.lineColor = '#659ed0';
@@ -26,6 +25,13 @@ class Parallelogram {
      * @returns {Parallelogram} current instance
      */
     addPoint(point) {
+        if (this.points.length >= 3) return;
+        this.reguisterPoint(point)
+        this.config.addElementToRender(point);
+        this.animate();
+    }
+
+    reguisterPoint(point) {
         this.animatedPoints.push({ x: point.x, y: point.y })
         this.points.push(point);
         return this;
@@ -38,18 +44,17 @@ class Parallelogram {
     onComplete(current) {
         this.isAnimating = false;
         if (current === 3) {
-            const autoPoint = new Point(getMissingPointParallelogram(this.newPoints), this.config).animate();
-            this.addPoint(autoPoint).animate();
-            this.newPoints.push(autoPoint);
-            this.elementsToRender.push(autoPoint);
+            const autoPoint = new Point(getMissingPointParallelogram(this.points), this.config).animate();
+            this.reguisterPoint(autoPoint).animate();
+            this.config.addElementToRender(autoPoint);
         }
 
         if (current === 4) {
-            this.addPoint(this.points[0]).animate();
+            this.reguisterPoint(this.points[0]).animate();
         }
 
         if (current === 5) {
-            this.elementsToRender.push(new AreaCircle(this, this.config).animate())
+            this.config.addElementToRender(new AreaCircle(this, this.config).animate())
         }
     }
 
@@ -69,9 +74,7 @@ class Parallelogram {
             lines.lineTo(point.x, point.y);
         });
 
-        lines.strokeStyle = this.lineColor; //review this
-        this.ctx.strokeStyle = this.lineColor;
-        this.ctx.stroke(lines);
+        this.config.reguisterLine(lines, this.lineColor);
         return this.isAnimating;
     }
     /**
@@ -88,6 +91,15 @@ class Parallelogram {
             onComplete: this.onComplete.bind(this),
             onCompleteParams: [this.points.length],
         });
+    }
+
+    /**
+     * return selected and the oposite points for current position
+     * @param {object} mousePos mouse position
+     * @returns {object}
+     */
+    selectPointAndOposite(mousePos) { 
+        return getSelectedPoint(this.points, mousePos);
     }
 }
 

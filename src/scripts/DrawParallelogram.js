@@ -1,6 +1,6 @@
 const Parallelogram = require('./entities/Parallelogram');
 const Point = require('./entities/Point');
-const { getSelectedPoint, updatePointsPosition } = require('./geometry');
+const { updatePointsPosition } = require('./geometry');
 
 class DrawParallelogram {
     /**
@@ -9,22 +9,24 @@ class DrawParallelogram {
      * @constructor
     */
     constructor(canvas, greenSockTweener, greenSockEase) {
+        
         this.ctx;
         this.canvas = canvas;
         this.elementsToRender = []
         this.renderAnimations = [];
-        this.newPoints = []
         this.parallelogram;
         this.interacting = false
-        this.selectedPoint;
-        this.opositePoint
+        this.selectedPoint = null;
+        this.opositePoint = null;
         this.animator = greenSockTweener;
         this.easing = {
             easeOut: greenSockEase.easeOut.config(1.7),
         };
+
         this.initializeCanvas();
         this.setListeners();
-        requestAnimationFrame(this.onUpdate.bind(this));
+        this.setupParallelogram()
+        this.onUpdate();
     }
 
     /**
@@ -33,11 +35,10 @@ class DrawParallelogram {
     restart() {
         this.elementsToRender = [];
         this.renderAnimations = [];
-        this.newPoints = [];
-        this.parallelogram = null;
         this.interacting = true;
         this.selectedPoint = null;
         this.opositePoint = null;
+        this.setupParallelogram();
     }
 
     /**
@@ -72,6 +73,42 @@ class DrawParallelogram {
         }
 
         requestAnimationFrame(this.onUpdate.bind(this));
+    }
+
+    /**
+     * reguister line of color on canvas context
+     * @param {Path2D} shape 
+     * @param {string} color 
+     */
+    reguisterLine(shape, color) {
+        this.ctx.strokeStyle = color;
+        this.ctx.stroke(shape);
+    }
+
+    /**
+     * reguister test on canvas
+     * @param {string} text 
+     * @param {object} pos 
+     * @param {string} color 
+     * @param {string} font 
+     */
+    reguisterText(text, pos, color, font) {
+        this.ctx.font = font;
+        this.ctx.fillStyle = color;
+        this.ctx.fillText(text, pos.x, pos.y);
+    }
+
+    reguisterFill(shape, color) {
+        this.ctx.fillStyle = color ;
+        this.ctx.fill(shape);
+    }
+
+    /**
+     * add element to render 
+     * @param {Path2D} shape 
+     */
+    addElementToRender(shape) {
+        this.elementsToRender.push(shape);
     }
 
     /**
@@ -112,9 +149,11 @@ class DrawParallelogram {
         this.interacting = true;
         this.draging = true;
         const mousePos = this.getMousePos(event);
-        const { selectedPoint, opositePoint } = getSelectedPoint(this.newPoints, mousePos);
-        this.selectedPoint = selectedPoint;
-        this.opositePoint = opositePoint;
+        if(this.parallelogram) {
+            const { selectedPoint, opositePoint } = this.parallelogram.selectPointAndOposite(mousePos);
+            this.selectedPoint = selectedPoint;
+            this.opositePoint = opositePoint;
+        }
     }
     /**
     * mouse move Event Handler
@@ -141,16 +180,16 @@ class DrawParallelogram {
      * @param {object} pos 
      */
     addNewPoint(pos) {
-        if (!this.parallelogram) {
-            this.parallelogram = new Parallelogram(this);
-            this.elementsToRender.push(this.parallelogram);
-        }
-        if (this.newPoints.length >= 3) return;
         const newPoint = new Point(pos, this).animate();
-        this.newPoints.push(newPoint)
-        this.parallelogram.addPoint(newPoint)
-        this.elementsToRender.push(newPoint);
-        this.parallelogram.animate();
+        this.parallelogram.addPoint(newPoint, this.elementsToRender);
+    }
+
+    /**
+     * setup new Instance for Parallelogram
+     */
+    setupParallelogram() {
+        this.parallelogram = new Parallelogram(this);
+        this.elementsToRender.push(this.parallelogram);
     }
 }
 

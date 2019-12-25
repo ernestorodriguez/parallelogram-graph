@@ -6,15 +6,13 @@ class Point {
     /**
      * @param {Object} pos position object 
      * @param {Object} Config context for rendering and interaction 
-     * @param {Object} Config.ctx canvas context
-     * @param {Element} Config.canvas canvas
      * @param {Object} Config.animator tweener for animation
      * @param {Object} Config.easing ease for animation
      * @constructor
      */
-    constructor(pos, {ctx, canvas, animator, easing}) {
-        this.ctx = ctx;
-        this.canvas = canvas;
+    constructor(pos, config) {
+        const { animator, easing } = config;
+        this.config = config;
         this.animator = animator;
         this.easing = easing;
         this.x = pos.x;
@@ -34,9 +32,9 @@ class Point {
      */
     render() {
         const path = new Path2D();
-        this.ctx.font = this.font;
-        this.ctx.fillStyle = this.textColor;
-        this.ctx.fillText(`x: ${this.x} y: ${this.y}`, this.x + 15, this.y);
+        const text = `x: ${this.x} y: ${this.y}`;
+        const position = {x: this.x + 15, y: this.y };
+        this.config.reguisterText(text, position, this.textColor, this.font);
         this.drawFilledCircle(this, this.r, this.fillColor, path);
         this.drawFilledCircle(this, 3, this.centerColor, path);
         return this.isAnimating;
@@ -72,8 +70,7 @@ class Point {
     drawFilledCircle(position, radius, color, path2D) {
         const circle = new Path2D(path2D);
         circle.arc(position.x, position.y, radius, 0, 2 * Math.PI);
-        this.ctx.fillStyle = color;
-        this.ctx.fill(circle);
+        this.config.reguisterFill(circle, color);
     }
 }
 

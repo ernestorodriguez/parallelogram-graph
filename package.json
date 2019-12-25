@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "watch": "webpack --config webpack.config.js --watch",
-    "test": "nyc --reporter=html --reporter=text mocha 'test/**/*.spec.js'"
+    "test": "nyc --reporter=html --reporter=text mocha 'test/**/*.spec.js'",
+    "test:watch": "nyc --reporter=html --reporter=text mocha 'test/**/*.spec.js' --watch"
   },
   "repository": {
     "type": "git",

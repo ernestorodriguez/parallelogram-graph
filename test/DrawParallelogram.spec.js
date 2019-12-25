@@ -44,9 +44,9 @@ describe('DrawParallelogram test', () => {
         };
         const dp = new DrawParallelogram(canvas, TweenMaxMock, BackEaseMock);
         actions.click({clientX:100, clientY:100})
-        expect(dp.newPoints.length).equal(1);
+        expect(dp.parallelogram.points.length).equal(1);
         expect(dp.parallelogram).instanceOf(Parallelogram)
-        expect(dp.newPoints[0]).instanceOf(Point)
+        expect(dp.parallelogram.points[0]).instanceOf(Point)
     });
 
     it('must only allow three points to be added and must calculate the fourt one', () => {
@@ -72,10 +72,11 @@ describe('DrawParallelogram test', () => {
             new Point(point0, dp),
             new Point(point1, dp),
             new Point(point2, dp),
-            new Point(calculatePoint, dp)
+            new Point(calculatePoint, dp),
+            new Point(point0, dp),
         ];
-        expect(dp.newPoints.length).equal(4);
-        expect(dp.newPoints).be.eql(expectedPoints);
+        expect(dp.parallelogram.points.length).equal(5);
+        expect(dp.parallelogram.points).be.eql(expectedPoints);
     });
 
     it('must move the points positions', () => {
@@ -103,10 +104,11 @@ describe('DrawParallelogram test', () => {
             new Point(point0, dp),
             new Point(expecteOpositePosition, dp),
             new Point(point2, dp),
-            new Point(expectePosition, dp)
+            new Point(expectePosition, dp),
+            new Point(point0, dp),
         ];
         
-        expect(dp.newPoints).be.eql(expectedPoints);
+        expect(dp.parallelogram.points).be.eql(expectedPoints);
     });
 
     it('must not move the points if position is outside active area', () => {
@@ -133,10 +135,11 @@ describe('DrawParallelogram test', () => {
             new Point(point0, dp),
             new Point(point1, dp),
             new Point(point2, dp),
-            new Point(calculatePoint, dp)
+            new Point(calculatePoint, dp),
+            new Point(point0, dp),
         ];
         
-        expect(dp.newPoints).be.eql(expectedPoints);
+        expect(dp.parallelogram.points).be.eql(expectedPoints);
     });
 
     it('must reset to initial state on restart', ()=> {
@@ -146,14 +149,14 @@ describe('DrawParallelogram test', () => {
         };
 
         const dp = new DrawParallelogram(canvas, TweenMaxMock, BackEaseMock);
-        actions.click({clientX:100, clientY:100})
-        expect(dp.newPoints.length).equal(1);
+        actions.click({clientX:100, clientY:100});
+
+        expect(dp.parallelogram.points.length).equal(1);
         expect(dp.elementsToRender.length).equal(2);
         expect(dp.parallelogram).instanceOf(Parallelogram);
         dp.restart();
-        expect(dp.parallelogram).to.be.null;
-        expect(dp.elementsToRender.length).equal(0);
-        expect(dp.newPoints.length).equal(0);
+        expect(dp.parallelogram).be.eql(new Parallelogram(dp));
+        expect(dp.elementsToRender.length).equal(1);
     })
 
     it('must Configure Canvas', () => {
