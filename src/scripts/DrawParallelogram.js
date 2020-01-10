@@ -12,10 +12,10 @@ class DrawParallelogram {
 
         this.ctx;
         this.canvas = canvas;
-        this.elementsToRender = []
+        this.elementsToRender = [];
         this.renderAnimations = [];
         this.parallelogram;
-        this.interacting = false
+        this.interacting = false;
         this.selectedPoint = null;
         this.oppositePoint = null;
         this.animator = greenSockTweener;
@@ -25,7 +25,7 @@ class DrawParallelogram {
 
         this.initializeCanvas();
         this.setListeners();
-        this.setupParallelogram()
+        this.setupParallelogram();
         this.onUpdate();
     }
 
@@ -70,7 +70,7 @@ class DrawParallelogram {
      */
     onUpdate() {
         if (this.interacting || this.renderAnimations.some((animate) => animate)) {
-            this.interacting = false
+            this.interacting = false;
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.renderAnimations = this.elementsToRender.map(element => element.render());
         }
@@ -124,7 +124,7 @@ class DrawParallelogram {
         let client = {
             x: event.clientX,
             y: event.clientY 
-        }
+        };
 
         if( event.touches ) {
             client = {
